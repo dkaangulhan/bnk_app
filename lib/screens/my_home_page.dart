@@ -1,5 +1,11 @@
+import 'package:banking_application/blocs/cards/cards_bloc.dart';
+import 'package:banking_application/blocs/cards/cards_bloc_events.dart';
+import 'package:banking_application/constants.dart';
 import 'package:banking_application/widgets/my_bottom_navigation_bar.dart';
+import 'package:banking_application/widgets/duration_chip.dart';
+import 'package:banking_application/widgets/my_chip.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../widgets/card.dart';
 import '../widgets/dashboard.dart';
@@ -19,6 +25,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color(0xFF287CFA),
+        extendBody: true,
+        bottomNavigationBar:
+            //MyBottomNavigationBar
+            MyBottomNavigationBar(mediaQueryData: mediaQueryData),
         body: Column(
           children: [
             //My Cards text
@@ -35,10 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             //ListView of cards' ids
-            Container(
-              height: 40.0,
-              color: Colors.white10,
-            ),
+            CardIdList(),
             const SizedBox(
               height: 20.0,
             ),
@@ -59,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       children: [
                         //Add Card
                         Container(
-                          width: 50.0,
+                          width: 45.0,
                           height: 220.0,
                           margin: EdgeInsets.only(left: 30.0),
                           decoration: BoxDecoration(
@@ -79,18 +86,115 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         //Card
                         Expanded(
-                          child: MyCard(mediaQueryData: mediaQueryData),
+                          child: MyCard(
+                            mediaQueryData: mediaQueryData,
+                          ),
                         )
                       ],
                     ),
                   ),
-                  //MyBottomNavigationBar
-                  MyBottomNavigationBar(mediaQueryData: mediaQueryData)
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class CardIdList extends StatefulWidget {
+  const CardIdList({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<CardIdList> createState() => _CardIdListState();
+}
+
+class _CardIdListState extends State<CardIdList> {
+  int index = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    CardsBloc cardsBloc = context.read<CardsBloc>();
+
+    final activeTextStyle = TextStyle(
+      color: Colors.black,
+    );
+    final inactiveTextStyle = TextStyle(
+      color: kWhiteishBackgroundColor,
+    );
+
+    return Container(
+      height: 30.0,
+      margin: const EdgeInsets.only(
+        left: 30.0,
+      ),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        clipBehavior: Clip.none,
+        itemBuilder: (_, mIndex) {
+          final isSelected = mIndex == index;
+          return MyChip(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                isSelected
+                    ? Container(
+                        margin: EdgeInsets.only(
+                          right: 5.0,
+                        ),
+                        child: Icon(
+                          Icons.circle,
+                          color: Colors.blueAccent,
+                          size: 6.0,
+                        ),
+                      )
+                    : SizedBox(),
+                Text(
+                  dummyCardList[mIndex].cardType.name,
+                  style: isSelected ? activeTextStyle : inactiveTextStyle,
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 1.0,
+                  ),
+                  child: Icon(
+                    Icons.star,
+                    size: 8.0,
+                    color: isSelected ? Colors.black : kWhiteishBackgroundColor,
+                  ),
+                ),
+                Text(
+                  dummyCardList[mIndex].id,
+                  style: isSelected ? activeTextStyle : inactiveTextStyle,
+                )
+              ],
+            ),
+            fixedWidth: 115.0,
+            activeBackgroundColor: Color(
+              0xFFD4E1FC,
+            ),
+            border: Border.all(
+              width: 1.5,
+              color: kWhiteishBackgroundColor,
+            ),
+            onTap: () {
+              setState(() {
+                index = mIndex;
+                context.read<CardsBloc>().add(
+                      CardAction(
+                        user: dummyUser,
+                        cardId: dummyCardList[index].id,
+                      ),
+                    );
+              });
+            },
+            selected: index == mIndex,
+          );
+        },
+        itemCount: dummyCardList.length,
       ),
     );
   }

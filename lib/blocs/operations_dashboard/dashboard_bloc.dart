@@ -1,20 +1,21 @@
-import 'dart:convert';
-
+import 'package:banking_application/constants.dart';
 import 'package:banking_application/blocs/operations_dashboard/dashboard_action.dart';
 import 'package:banking_application/blocs/operations_dashboard/dashboard_states.dart';
-import 'package:banking_application/models/transaction_data_model.dart';
+import 'package:banking_application/models/transaction_data_model_adapter.dart';
 import 'package:bloc/bloc.dart';
-import 'dart:io' show HttpClient;
 
-const dummyOperationsUrl = 'http://10.0.2.2:3000/users/operations';
+class DashboardBloc<adapter extends TransactionAdapter>
+    extends Bloc<OperationsAction, DashboardBlocState> {
+  adapter transactionDataModelAdapter;
 
-class DashboardBloc extends Bloc<OperationsAction, DashboardBlocState> {
-  DashboardBloc() : super(OperationState(dataLoaded: false)) {
+  DashboardBloc(this.transactionDataModelAdapter)
+      : super(OperationState(dataLoaded: false)) {
     on<LoadOperationsAction>((event, emit) async {
       print('LoadOperationsAction was emitted..');
       //emit loading state
       emit(OperationState());
 
+      /*
       //request data from DB. This will be sent to data layer.
       //response is expected to be JSON
       final operations = await HttpClient()
@@ -22,18 +23,32 @@ class DashboardBloc extends Bloc<OperationsAction, DashboardBlocState> {
           .then((req) => req.close())
           .then((res) => res.transform(utf8.decoder).join())
           .then((json) => jsonDecode(json) as Map);
+*/
+      final operations = dummyOperations;
 
-      List<TransactionDataModel> list = [];
-      operations.forEach((key, value) {
-        list.add(TransactionDataModel.fromObject(data: value));
-      });
+      TransactionAdapterResult? transactionAdapterResult =
+          transactionDataModelAdapter.transform(
+        operations,
+        input: {
+          'cardId': event.cardId,
+          'user': dummyUser,
+        },
+      );
+
+      //Error state
+      if (transactionAdapterResult == null) {
+        emit(OperationState());
+        return;
+      }
 
       //emit new state
       emit(
         OperationState(
-          data: list,
+          data: transactionAdapterResult.list,
           dataLoaded: true,
           displayMethod: DashboardDisplayMethods.stick,
+          income: transactionAdapterResult.totalIncome,
+          charges: transactionAdapterResult.totalCharges,
         ),
       );
     });

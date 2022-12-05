@@ -1,6 +1,8 @@
+import 'package:banking_application/blocs/cards/cards_bloc.dart';
 import 'package:banking_application/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:banking_application/screens/my_home_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,7 +28,12 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primaryColor: kPrimaryTextColor,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: BlocProvider(
+        create: (_) => CardsBloc(),
+        child: const MyHomePage(
+          title: 'Flutter Demo Home Page',
+        ),
+      ),
     );
   }
 }

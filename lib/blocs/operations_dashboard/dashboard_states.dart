@@ -4,23 +4,31 @@ abstract class DashboardBlocState {
   final List<TransactionDataModel>? data;
   final displayMethod;
   final dataLoaded;
+  final double? income;
+  final double? charges;
 
   DashboardBlocState({
     this.data,
     this.displayMethod,
     this.dataLoaded,
+    this.income,
+    this.charges,
   });
 }
 
 class OperationState extends DashboardBlocState {
   OperationState({
-    data,
+    List<TransactionDataModel>? data,
     displayMethod,
     dataLoaded,
+    income,
+    charges,
   }) : super(
           data: data,
           displayMethod: displayMethod ?? DashboardDisplayMethods.stick,
           dataLoaded: dataLoaded ?? false,
+          income: income,
+          charges: charges,
         );
 }
 

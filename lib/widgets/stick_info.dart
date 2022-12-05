@@ -30,6 +30,7 @@ class StickInfo extends StatelessWidget {
         color: Colors.grey.shade300,
         borderRadius: borderRadiusUpward,
       ),
+      clipBehavior: Clip.hardEdge,
       child: Stack(
         children: [
           Positioned(
