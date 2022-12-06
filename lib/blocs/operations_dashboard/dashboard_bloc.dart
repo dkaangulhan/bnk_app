@@ -4,11 +4,10 @@ import 'package:banking_application/blocs/operations_dashboard/dashboard_states.
 import 'package:banking_application/models/transaction_data_model_adapter.dart';
 import 'package:bloc/bloc.dart';
 
-class DashboardBloc<adapter extends TransactionAdapter>
-    extends Bloc<OperationsAction, DashboardBlocState> {
-  adapter transactionDataModelAdapter;
+class DashboardBloc extends Bloc<OperationsAction, DashboardBlocState> {
+  TransactionAdapter transactionAdapter;
 
-  DashboardBloc(this.transactionDataModelAdapter)
+  DashboardBloc(this.transactionAdapter)
       : super(OperationState(dataLoaded: false)) {
     on<LoadOperationsAction>((event, emit) async {
       print('LoadOperationsAction was emitted..');
@@ -27,7 +26,7 @@ class DashboardBloc<adapter extends TransactionAdapter>
       final operations = dummyOperations;
 
       TransactionAdapterResult? transactionAdapterResult =
-          transactionDataModelAdapter.transform(
+          transactionAdapter.transform(
         operations,
         input: {
           'cardId': event.cardId,
