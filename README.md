@@ -1,16 +1,6 @@
 # banking_application
 
-A new Flutter project.
+I am transforming UI desgin found on dribble (<a href="https://dribbble.com/shots/19635519-Banking-mobile-App-iOS-Android-UI">the UI's dribble page</a>)
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<h2>Current view</h2>
+<img src="https://github.com/dkaangulhan/bnk_app/blob/master/bnk_app.gif?raw=true">
